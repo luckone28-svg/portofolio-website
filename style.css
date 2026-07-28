@@ -191,31 +191,7 @@ section:nth-of-type(2) {
     word-break: break-word;
 }
 
-/* Strip Simulasi diperbaiki dari 100vw menjadi 100% agar tidak bikin scroll */
-.hero-fullwidth-simulation {
-    position: relative;
-    width: 100%; /* Diubah dari 100vw untuk mencegah horizontal scroll */
-    height: 90px;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(10px);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-}
 
-.simulation-track {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    box-sizing: border-box;
-}
 
 /* Container Visual Pengganti Robot */
 .hero-3d-center {
@@ -523,123 +499,7 @@ section:nth-of-type(2) {
     }
 }
 
-/* ==========================================================================
-   FULL-WIDTH AUTONOMOUS SIMULATION STRIP (EDGE TO EDGE)
-   ========================================================================== */
-.hero-fullwidth-simulation {
-    position: absolute;
-    top: 45%;
-    left: 0;
-    width: 100vw;
-    height: 100px;
-    transform: translateY(-50%);
-    z-index: 5;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(10px);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-}
 
-.simulation-track {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-}
-
-/* Garis Jalan Putus-Putus Tengah */
-.road-grid-line {
-    position: absolute;
-    bottom: 22px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: repeating-linear-gradient(90deg, #ffffff, #ffffff 25px, transparent 25px, transparent 50px);
-    opacity: 0.25;
-}
-
-/* Kontainer Mobil & Lampu Sorot */
-.car-track-container {
-    position: absolute;
-    right: -150px;
-    bottom: 12px;
-    animation: fullWidthDrive 4.5s linear infinite;
-    display: flex;
-    align-items: center;
-}
-
-.car-svg {
-    width: 105px;
-    height: auto;
-    transform: scaleX(-1);
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
-}
-
-.car-headlight {
-    position: absolute;
-    left: -45px;
-    bottom: 15px;
-    width: 60px;
-    height: 8px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.9), transparent);
-    filter: blur(5px);
-}
-
-/* Kotak Telemetri HUD (Biar Tidak Sepi) */
-.telemetry-hud {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    letter-spacing: 1.5px;
-    z-index: 6;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 6px 14px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    backdrop-filter: blur(4px);
-}
-
-.hud-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.telemetry-hud span, .hud-title {
-    color: #fff;
-    font-weight: 700;
-}
-
-.telemetry-hud small {
-    font-size: 0.55rem;
-    color: #00ff66;
-    margin-top: 2px;
-}
-
-.hud-dot {
-    width: 5px;
-    height: 5px;
-    background-color: #00ff66;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #00ff66;
-}
-
-/* Animasi Melintas Penuh dari Kanan ke Kiri Layar */
-@keyframes fullWidthDrive {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-100vw - 300px));
-    }
-}
 
 /* Responsif Mobile */
 @media (max-width: 900px) {
