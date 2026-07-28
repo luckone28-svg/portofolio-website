@@ -4,312 +4,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Luckas Nur Ilham | Portfolio</title>
+    <title>Luckas Nur Ilham | AI Engineer</title>
 
     <link rel="stylesheet" href="style.css">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <meta name="author" content="Luckas Nur Ilham">
-    <meta name="robots" content="index,follow">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="description" content="Personal portfolio of Luckas Nur Ilham, future AI Engineer, showcasing web development and AI learning projects.">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <meta property="og:title" content="Luckas Nur Ilham Portfolio">
-    <meta property="og:description" content="Future AI Engineer | Web Developer">
-    <meta property="og:image" content="preview.png">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://luckas-portofolio.netlify.app">
-    <meta property="og:site_name" content="Luckas Portfolio">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <link rel="apple-touch-icon" href="favicon.png">
-
 </head>
 
 <body>
 
     <div id="progress-bar"></div>
 
-<nav>
-    <div class="logo">Luckas Nur Ilham</div>
-    <ul>
+    <nav class="editorial-nav">
+        <div class="nav-left">
+            <span class="nav-symbol">&gt;</span>
+            <div class="nav-name-group">
+                <a href="#home" class="nav-name">LUCKAS NUR ILHAM</a>
+                <span class="nav-role">AI ENGINEER</span>
+            </div>
+        </div>
 
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <div class="nav-center">
+            <div class="availability-badge">
+                <span class="badge-dot"></span>
+                <div class="badge-text">
+                    <small>CURRENTLY</small>
+                    <span>AVAILABLE FOR WORK</span>
+                </div>
+            </div>
+        </div>
 
-    </ul>
+        <div class="nav-right">
+            <a href="#contact" class="nav-cta">SCHEDULE A CALL</a>
+        </div>
+    </nav>
 
-    <div class="menu-toggle">
-      ☰
-    </div>
-</nav>
-     
-<section class="hero" id="home">
-    <div class="hero-content">
-        <p class="hello">👋 HELLO THERE</p>
-        <h1>I'm Luckas Nur Ilham</h1>
-        <h2 id="typing"></h2>
-        <p class="description">
-            Building AI and modern web applications while documenting
-            my learning journey as an Information Technology student.
-        </p>
-        <div class="buttons">
-            <a href="#projects" class="btn primary">
-                View Projects
+    <!-- HERO EDITORIAL SECTION -->
+    <section class="hero-editorial">
+        <!-- 1. KONTAINER JUDUL (Harus di paling atas) -->
+        <div class="hero-titles-wrapper">
+            <div class="hero-title-box">
+                <span class="title-num">01</span>
+                <h1 class="hero-giant-title">AI<br>Engineer</h1>
+            </div>
+            <div class="hero-title-box right">
+                <span class="title-num">02</span>
+                <h1 class="hero-giant-title">Web<br>Developer</h1>
+           </div>
+        </div>
+
+        <!-- 2. STRIP SIMULASI MOBIL (Harus di bawah judul) -->
+        <div class="hero-fullwidth-simulation">
+            <div class="simulation-track">
+                <!-- Telemetri Kiri -->
+                <div class="telemetry-hud left-hud">
+                    <div class="hud-status">
+                        <span class="hud-dot"></span>
+                        <span>AI LIDAR: ACTIVE</span>
+                    </div>
+                    <small>LAT: 6.2088° S // LONG: 107.1495° E</small>
+                </div>
+
+                <!-- Garis Jalan Putus-Putus -->
+                <div class="road-grid-line"></div>
+
+                <!-- Mobil Bergerak -->
+                <div class="car-track-container">
+                    <svg class="car-svg" viewBox="0 0 240 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 60L50 35H160L190 60H220C225.523 60 230 64.4772 230 70V75C230 77.7614 227.761 80 225 80H215C215 71.7157 208.284 65 200 65C191.716 65 185 71.7157 185 80H55C55 71.7157 48.2843 65 40 65C31.7157 65 25 71.7157 25 80H15C12.2386 80 10 77.7614 10 75V70C10 64.4772 14.4772 60 20 60Z" fill="#ffffff" fill-opacity="0.9"/>
+                        <path d="M60 38H150L175 60H35L60 38Z" fill="#ffffff" fill-opacity="0.2"/>
+                        <circle cx="40" cy="80" r="10" fill="#000000" stroke="#ffffff" stroke-width="4"/>
+                        <circle cx="200" cy="80" r="10" fill="#000000" stroke="#ffffff" stroke-width="4"/>
+                    </svg>
+                    <div class="car-headlight"></div>
+                </div>
+
+                <!-- Telemetri Kanan -->
+                <div class="telemetry-hud right-hud">
+                    <span class="hud-title">VELOCITY: 120 KM/H</span>
+                    <small>SYSTEM: AUTONOMOUS OK</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container" id="about">
+        <div class="section-header">
+            <span class="section-tag">02 // ABOUT ME</span>
+            <h2 class="section-title">Background & Journey</h2>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-photo-card">
+                <img src="foto.png" alt="Luckas Nur Ilham" class="profile-img">
+            </div>
+
+            <div class="about-bio-card">
+                <p>
+                    Hi! Saya <strong>Luckas Nur Ilham</strong>,Saya lulusan <strong>SMAN 1 SAMPIT</strong> dan sekarang saya seorang mahasiswa Information Technology di <strong>President University</strong> dengan spesialisasi <strong>Artificial Intelligence</strong>
+                </p>
+                <p>
+                    Fokus utama saya adalah membangun sistem cerdas berbasis Machine Learning serta mengembangkan antarmuka web modern berestetika tinggi.
+                </p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 class="stat-number" id="projectCount">02+</h3>
+                    <p class="stat-label">Projects Built</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-number">2026</h3>
+                    <p class="stat-label">Journey Started</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container" id="projects">
+        <div class="section-header">
+            <span class="section-tag">03 // PORTFOLIO</span>
+            <h2 class="section-title">Featured Works</h2>
+        </div>
+
+        <div class="projects-grid">
+            <div class="project-card" data-aos="fade-up">
+                <div class="project-header">
+                    <span class="project-number">01</span>
+                    <div class="tech-stack">
+                        <span>WEBSITE</span><span>HTML</span>
+                    </div>
+                </div>
+                <h3 class="project-title">Happy Birthday Website</h3>
+                <p class="project-desc">Website ucapan ulang tahun yang interaktif dan menyenangkan.</p>
+                <div class="project-links">
+                    <a href="https://rosie-hbd.netlify.app/" target="_blank" class="btn-project primary">View Details ↗</a>
+                </div>
+            </div>
+
+            <div class="project-card" data-aos="fade-up">
+                <div class="project-header">
+                    <span class="project-number">02</span>
+                    <div class="tech-stack">
+                        <span>AI</span><span>COMPUTER VISION</span><span>PYTHON</span>
+                    </div>
+                </div>
+                <h3 class="project-title">Interactive Hand Frame</h3>
+                <p class="project-desc">Aplikasi web deteksi objek secara langsung menggunakan model Machine Learning di browser.</p>
+                <div class="project-links">
+                    <a href="detector.html" class="btn-project primary">Try Simulation ↗</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container" id="contact">
+        <div class="section-header center">
+            <span class="section-tag">04 // CONNECT</span>
+            <h2 class="section-title">Let's Work Together</h2>
+        </div>
+
+        <div class="contact-grid">
+            <a href="mailto:luck05635@gmail.com" class="contact-card">
+                <div class="contact-icon">📧</div>
+                <h3>Email</h3>
+                <p>luck05635@gmail.com</p>
             </a>
-
-            <a href="#contact" class="btn secondary">
-                Contact Me
+            <a href="https://github.com/luckone28-svg" target="_blank" class="contact-card">
+                <div class="contact-icon">💻</div>
+                <h3>GitHub</h3>
+                <p>@luckone28-svg</p>
+            </a>
+            <a href="https://instagram.com/888.luckks" target="_blank" class="contact-card">
+                <div class="contact-icon">📷</div>
+                <h3>Instagram</h3>
+                <p>@888.luckks</p>
             </a>
         </div>
-    </div>
-    <div class="hero-image">
-        <img src="profile.jpg" alt="Portrait of Luckas Nur Ilham">
-    </div>
-</section>
+    </section>
 
-<section class="about hidden" id="about">
+    <footer class="clean-footer">
+        <p>© 2026 Luckas Nur Ilham. All Rights Reserved.</p>
+    </footer>
 
-    <h2>About Me</h2>
+    <button id="topBtn">↑</button>
 
-    <p>
-    Hi! I'm Luckas Nur Ilham, a recent graduate from SMAN 1 Sampit.
-   </p>
-
-   <p>
-    I will begin my studies at President University, majoring in Information Technology with a specialization in Artificial Intelligence.
-   </p>
-
-   <p>
-    I enjoy learning programming, building websites, and documenting my journey as I grow into a future AI Engineer.
-   </p>
-</section>
-
-<section class="stats hidden">
-
-    <div>
-        <h3>5+</h3>
-        <p>Projects</p>
-    </div>
-
-    <div>
-        <h3>6+</h3>
-        <p>Technologies</p>
-    </div>
-
-    <div>
-        <h3>2026</h3>
-        <p>Started Journey</p>
-    </div>
-
-</section>
-
-<section class="skills hidden" id="skills">
-
-    <h2>My Skills</h2>
-
-    <p class="skills-subtitle">
-        Technologies I am currently learning.
-    </p>
-
-    <div class="skills-grid">
-
-        <div class="skill-card">
-            <h3>🐍 Python</h3>
-            <p>Learning</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>🌐 HTML5</h3>
-            <p>Intermediate</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>🎨 CSS3</h3>
-            <p>Intermediate</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>⚡ JavaScript</h3>
-            <p>Beginner</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>Git & GitHub</h3>
-            <p>Learning</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>Artificial Intelligence</h3>
-            <p>Coming Soon</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>Machine Learning</h3>
-           <div class="progress">
-       <div style="width:65%"></div>
-    </div>
- <p>Learning</p>
-</div>
-
-    </div>
-
-</section>
-
-<div id="cursor-light"></div>
-
-<section class="projects hidden" id="projects">
-
-    <h2>My Projects</h2>
-
-    <p class="projects-subtitle">
-        Here are some projects I've built while learning web development.
-    </p>
-
-    <div class="projects-grid">
-
-        <div class="project-card" data-aos="fade-up">
-
-            <h3>🌐 Portfolio Website</h3>
-
-            <div class="tech-stack">
-                <span>HTML</span>
-                <span>CSS</span>
-                <span>JavaScript</span>
-            </div>
-
-            <p>
-                My personal portfolio website where I document my learning journey and showcase my projects.
-            </p>
-
-            <div class="project-buttons">
-
-                <a href="https://luckas-portofolio.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn primary">
-                    Live Demo
-                </a>
-
-                <a href="https://github.com/luckone28-svg/portofolio-website" target="_blank" rel="noopener noreferrer" class="btn secondary">
-                    GitHub
-                </a>
-
-            </div>
-
-        </div>
-
-        <div class="project-card">
-
-            <h3>🎂 Birthday Website</h3>
-
-            <div class="tech-stack">
-                <span>HTML</span>
-                <span>CSS</span>
-                <span>JavaScript</span>
-            </div>
-
-            <p>
-                An interactive birthday website featuring animations, music, and heartfelt messages.
-            </p>
-
-            <div class="project-buttons">
-
-                <a href="https://rosie-hbd.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn primary">
-                    Live Demo
-                </a>
-
-                <a href="https://github.com/luckone28-svg/hbd-website" target="_blank" rel="noopener noreferrer" class="btn secondary">
-                    GitHub
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-</section>
-
-<section class="contact hidden" id="contact">
-
-    <h2>Let's Connect</h2>
-
-    <p class="contact-subtitle">
-        Feel free to reach out through any of these platforms.
-    </p>
-
-    <div class="contact-grid">
-
-        <a href="mailto:luck05635@gmail.com" class="contact-card">
-
-            <h3>📧 Email</h3>
-
-            <p>luck05635@gmail.com</p>
-
-        </a>
-
-        <a href="https://github.com/luckone28-svg"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="contact-card">
-
-            <h3>💻 GitHub</h3>
-
-            <p>luckone28-svg</p>
-
-        </a>
-
-        <a href="javascript:void(0)"
-           class="contact-card">
-
-            <h3>💼 LinkedIn</h3>
-
-            <p>Coming Soon</p>
-
-        </a>
-
-    </div>
-
-</section>
-
-<div class="socials">
-
-   <a href="https://github.com/luckone28-svg" target="_blank" rel="noopener noreferrer">GitHub</a>
-
-   <a href="#">LinkedIn</a>
-
-    <a href="https://instagram.com/888.luckks" target="_blank" rel="noopener noreferrer">
-      📷 Instagram
-    </a>
-</div>
-
-<div id="loader">
-    <div class="spinner"></div>
-</div>
-
-<footer>
-
-    <p>© 2026 Luckas Nur Ilham. All Rights Reserved.</p>
-
-    <p>
-        Designed & Built with HTML, CSS & JavaScript.
-    </p>
-
-</footer>
-
-<button id="topBtn">↑</button>
-
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-
-<script>
-AOS.init({
-    duration:1000,
-    once:true
-});
-</script>
-
-<script src="script.js"></script>
+    <!-- Library AOS & File JavaScript Eksternal -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5S Snapshot AR | Luckas Nur Ilham</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- MediaPipe Hands & Camera Utils -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --font-heading: 'Syne', sans-serif;
+            --font-mono: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .tag {
+            font-size: 0.70rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .view-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            margin: 10px 0;
+        }
+
+        #webcam, #canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            transform: scaleX(-1);
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: scaleX(1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.85;
+        }
+
+        .loader {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            font-size: 0.80rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .back-btn {
+            color: var(--text-main);
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.70rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .back-btn:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span class="tag" id="statusTag">TAHAP 1: ATUR JARI & CAPTURE BACKGROUND + KUNCI FRAME</span>
+        <h1 id="statusTitle">Interactive Hand Frame</h1>
+    </div>
+
+    <div class="view-container">
+        <div id="loader" class="loader">MEMUAT MODEL KAMERA...</div>
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <button id="captureBtn" class="action-btn" onclick="startCountdown()">📸 CAPTURE BACKGROUND (5S)</button>
+        <button class="action-btn" style="background:#ff3366; color:#fff;" onclick="resetFrame()">🔄 RESET</button>
+        <a id="downloadLink" class="action-btn" style="display:none; text-decoration:none; background:#00ffcc;" download="locked-frame-snapshot.png">⬇️ DOWNLOAD</a>
+    </div>
+
+    <a href="index.html" class="back-btn">← KEMBALI KE PORTOFOLIO</a>
+
+    <script>
+        const videoElement = document.getElementById('webcam');
+        const canvasElement = document.getElementById('canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const loader = document.getElementById('loader');
+        const downloadLink = document.getElementById('downloadLink');
+        const captureBtn = document.getElementById('captureBtn');
+        const statusTag = document.getElementById('statusTag');
+
+        let countdown = null;
+        let captureStep = 0; // 0: Ambil background & kunci frame, 1: Ambil isi dalam frame, 2: Selesai
+        let currentPoints = [];
+        let lockedPoints = null;
+        let backgroundSnapshot = null;
+        let innerSnapshot = null;
+
+        function startCountdown() {
+            if (countdown !== null || captureStep >= 2 || (captureStep === 0 && currentPoints.length < 3)) return;
+            countdown = 5; // Durasi diubah menjadi 5 detik
+            let timer = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    countdown = null;
+                    processCaptureStep();
+                }
+            }, 1000);
+        }
+
+        function processCaptureStep() {
+            if (captureStep === 0) {
+                // TAHAP 1: Ambil foto background & kunci posisi/bentuk frame
+                lockedPoints = [...currentPoints];
+
+                backgroundSnapshot = document.createElement('canvas');
+                backgroundSnapshot.width = videoElement.videoWidth;
+                backgroundSnapshot.height = videoElement.videoHeight;
+                const bCtx = backgroundSnapshot.getContext('2d');
+                bCtx.save();
+                bCtx.scale(-1, 1);
+                bCtx.drawImage(videoElement, -backgroundSnapshot.width, 0, backgroundSnapshot.width, backgroundSnapshot.height);
+                bCtx.restore();
+
+                captureStep = 1;
+                statusTag.innerText = "TAHAP 2: ARAHKAN OBJEK KE DALAM FRAME & CAPTURE";
+                captureBtn.innerText = "📸 CAPTURE DALAM FRAME (5S)";
+
+            } else if (captureStep === 1) {
+                // TAHAP 2: Ambil foto bagian dalam frame
+                innerSnapshot = document.createElement('canvas');
+                innerSnapshot.width = videoElement.videoWidth;
+                innerSnapshot.height = videoElement.videoHeight;
+                const iCtx = innerSnapshot.getContext('2d');
+                iCtx.save();
+                iCtx.scale(-1, 1);
+                iCtx.drawImage(videoElement, -innerSnapshot.width, 0, innerSnapshot.width, innerSnapshot.height);
+                iCtx.restore();
+
+                captureStep = 2;
+                statusTag.innerText = "SELESAI: FOTO BERHASIL DIGABUNGKAN!";
+                captureBtn.style.display = 'none';
+
+                generateFinalDownload();
+            }
+        }
+
+        function generateFinalDownload() {
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = videoElement.videoWidth;
+            exportCanvas.height = videoElement.videoHeight;
+            const eCtx = exportCanvas.getContext('2d');
+
+            // 1. Gambar Background Luar terlebih dahulu
+            if (backgroundSnapshot) {
+                eCtx.drawImage(backgroundSnapshot, 0, 0);
+            }
+
+            // 2. Timpa bagian dalam polygon dengan foto dalam frame yang sudah dikunci
+            if (lockedPoints && lockedPoints.length >= 3 && innerSnapshot) {
+                eCtx.save();
+                eCtx.beginPath();
+                eCtx.moveTo(lockedPoints[0].x, lockedPoints[0].y);
+                for (let i = 1; i < lockedPoints.length; i++) {
+                    eCtx.lineTo(lockedPoints[i].x, lockedPoints[i].y);
+                }
+                eCtx.closePath();
+                eCtx.clip();
+
+                eCtx.drawImage(innerSnapshot, 0, 0);
+                eCtx.restore();
+
+                // 3. Tambahkan Garis Pinggir Frame
+                eCtx.save();
+                eCtx.beginPath();
+                eCtx.moveTo(lockedPoints[0].x, lockedPoints[0].y);
+                for (let i = 1; i < lockedPoints.length; i++) {
+                    eCtx.lineTo(lockedPoints[i].x, lockedPoints[i].y);
+                }
+                eCtx.closePath();
+                eCtx.strokeStyle = "#ff00aa";
+                eCtx.lineWidth = 4;
+                eCtx.stroke();
+                eCtx.restore();
+            }
+
+            downloadLink.href = exportCanvas.toDataURL('image/png');
+            downloadLink.style.display = 'inline-block';
+        }
+
+        function resetFrame() {
+            captureStep = 0;
+            lockedPoints = null;
+            backgroundSnapshot = null;
+            innerSnapshot = null;
+            downloadLink.style.display = 'none';
+            captureBtn.style.display = 'inline-block';
+            captureBtn.innerText = "📸 CAPTURE BACKGROUND (5S)";
+            statusTag.innerText = "TAHAP 1: ATUR JARI & CAPTURE BACKGROUND + KUNCI FRAME";
+        }
+
+        function sortPointsClockwise(points) {
+            if (points.length < 3) return points;
+            let cx = points.reduce((sum, p) => sum + p.x, 0) / points.length;
+            let cy = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+            
+            return points.slice().sort((a, b) => {
+                return Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx);
+            });
+        }
+
+        function onResults(results) {
+            loader.style.display = 'none';
+
+            canvasElement.width = videoElement.videoWidth;
+            canvasElement.height = videoElement.videoHeight;
+
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            if (captureStep === 0) {
+                // --- TAHAP 0: Background Live + Frame Bergerak Mengikuti Jari ---
+                canvasCtx.save();
+                canvasCtx.scale(-1, 1);
+                canvasCtx.drawImage(videoElement, -canvasElement.width, 0, canvasElement.width, canvasElement.height);
+                canvasCtx.restore();
+
+                let rawPoints = [];
+                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                    for (const landmarks of results.multiHandLandmarks) {
+                        if (landmarks[8].y < landmarks[6].y) {
+                            rawPoints.push({ x: canvasElement.width - (landmarks[8].x * canvasElement.width), y: landmarks[8].y * canvasElement.height });
+                        }
+                        if (landmarks[12].y < landmarks[10].y) {
+                            rawPoints.push({ x: canvasElement.width - (landmarks[12].x * canvasElement.width), y: landmarks[12].y * canvasElement.height });
+                        }
+                        if (landmarks[16].y < landmarks[14].y) {
+                            rawPoints.push({ x: canvasElement.width - (landmarks[16].x * canvasElement.width), y: landmarks[16].y * canvasElement.height });
+                        }
+                        if (landmarks[20].y < landmarks[18].y) {
+                            rawPoints.push({ x: canvasElement.width - (landmarks[20].x * canvasElement.width), y: landmarks[20].y * canvasElement.height });
+                        }
+                        const dTip = Math.hypot(landmarks[4].x - landmarks[0].x, landmarks[4].y - landmarks[0].y);
+                        const dMcp = Math.hypot(landmarks[2].x - landmarks[0].x, landmarks[2].y - landmarks[0].y);
+                        if (dTip > dMcp * 1.1) {
+                            rawPoints.push({ x: canvasElement.width - (landmarks[4].x * canvasElement.width), y: landmarks[4].y * canvasElement.height });
+                        }
+                    }
+                }
+
+                if (rawPoints.length >= 3) {
+                    currentPoints = sortPointsClockwise(rawPoints);
+                } else {
+                    const cx = canvasElement.width / 2;
+                    const cy = canvasElement.height / 2;
+                    currentPoints = [
+                        { x: cx, y: cy - 100 },
+                        { x: cx + 120, y: cy },
+                        { x: cx, y: cy + 100 },
+                        { x: cx - 120, y: cy }
+                    ];
+                }
+
+                if (currentPoints && currentPoints.length >= 3) {
+                    canvasCtx.save();
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(currentPoints[0].x, currentPoints[0].y);
+                    for (let i = 1; i < currentPoints.length; i++) {
+                        canvasCtx.lineTo(currentPoints[i].x, currentPoints[i].y);
+                    }
+                    canvasCtx.closePath();
+                    canvasCtx.strokeStyle = countdown !== null ? "#00ffcc" : "rgba(255, 255, 255, 0.7)";
+                    canvasCtx.lineWidth = 3;
+                    canvasCtx.stroke();
+                    canvasCtx.restore();
+                }
+
+            } else if (captureStep === 1) {
+                // --- TAHAP 1: Background Beku & Frame Terkunci, Bagian Dalam Live Video ---
+                canvasCtx.drawImage(backgroundSnapshot, 0, 0);
+
+                if (lockedPoints && lockedPoints.length >= 3) {
+                    canvasCtx.save();
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(lockedPoints[0].x, lockedPoints[0].y);
+                    for (let i = 1; i < lockedPoints.length; i++) {
+                        canvasCtx.lineTo(lockedPoints[i].x, lockedPoints[i].y);
+                    }
+                    canvasCtx.closePath();
+                    canvasCtx.clip();
+
+                    // Render live video di dalam frame yang terkunci
+                    canvasCtx.save();
+                    canvasCtx.scale(-1, 1);
+                    canvasCtx.drawImage(videoElement, -canvasElement.width, 0, canvasElement.width, canvasElement.height);
+                    canvasCtx.restore();
+
+                    canvasCtx.restore();
+
+                    // Garis pinggir frame yang terkunci
+                    canvasCtx.save();
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(lockedPoints[0].x, lockedPoints[0].y);
+                    for (let i = 1; i < lockedPoints.length; i++) {
+                        canvasCtx.lineTo(lockedPoints[i].x, lockedPoints[i].y);
+                    }
+                    canvasCtx.closePath();
+                    canvasCtx.strokeStyle = countdown !== null ? "#00ffcc" : "rgba(255, 255, 255, 0.8)";
+                    canvasCtx.lineWidth = 3;
+                    canvasCtx.stroke();
+                    canvasCtx.restore();
+                }
+
+            } else if (captureStep === 2) {
+                // --- TAHAP 2: Keduanya Selesai (Tampilkan hasil gabungan penuh) ---
+                canvasCtx.drawImage(backgroundSnapshot, 0, 0);
+
+                if (lockedPoints && lockedPoints.length >= 3 && innerSnapshot) {
+                    canvasCtx.save();
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(lockedPoints[0].x, lockedPoints[0].y);
+                    for (let i = 1; i < lockedPoints.length; i++) {
+                        canvasCtx.lineTo(lockedPoints[i].x, lockedPoints[i].y);
+                    }
+                    canvasCtx.closePath();
+                    canvasCtx.clip();
+                    canvasCtx.drawImage(innerSnapshot, 0, 0);
+                    canvasCtx.restore();
+
+                    canvasCtx.save();
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(lockedPoints[0].x, lockedPoints[0].y);
+                    for (let i = 1; i < lockedPoints.length; i++) {
+                        canvasCtx.lineTo(lockedPoints[i].x, lockedPoints[i].y);
+                    }
+                    canvasCtx.closePath();
+                    canvasCtx.strokeStyle = "#ff00aa";
+                    canvasCtx.lineWidth = 4;
+                    canvasCtx.stroke();
+                    canvasCtx.restore();
+                }
+            }
+
+            // Hitung mundur angka besar di tengah layar
+            if (countdown !== null) {
+                canvasCtx.font = "bold 90px 'Syne', sans-serif";
+                canvasCtx.fillStyle = "#00ffcc";
+                canvasCtx.textAlign = "center";
+                canvasCtx.textBaseline = "middle";
+                canvasCtx.fillText(countdown, canvasElement.width / 2, canvasElement.height / 2);
+            }
+
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+        });
+
+        hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.6
+        });
+
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => { await hands.send({ image: videoElement }); },
+            width: 640,
+            height: 480
+        });
+
+        camera.start().catch(err => {
+            loader.innerText = "IZIN KAMERA DITOLAK ATAU TIDAK TERSEDIA";
+            console.error(err);
+        });
+    </script>
+</body>
+</html>
